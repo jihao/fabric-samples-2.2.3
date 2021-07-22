@@ -47,6 +47,9 @@ services:
       - 7050:7050
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -85,6 +88,9 @@ services:
       - 7051:7051
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
@@ -123,6 +129,9 @@ services:
       - 9051:9051
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
   
   cli:
     container_name: cli
@@ -145,3 +154,6 @@ services:
       - peer0.org2.example.com
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts

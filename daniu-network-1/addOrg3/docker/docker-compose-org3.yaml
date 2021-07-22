@@ -50,3 +50,6 @@ services:
       - 11051:11051
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts

@@ -25,6 +25,9 @@ services:
     container_name: ca_org1
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
 
   ca_org2:
     image: hyperledger/fabric-ca:$IMAGE_TAG
@@ -41,6 +44,9 @@ services:
     container_name: ca_org2
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
 
   ca_orderer:
     image: hyperledger/fabric-ca:$IMAGE_TAG
@@ -57,3 +63,6 @@ services:
     container_name: ca_orderer
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
