@@ -147,6 +147,7 @@ function addOrg3 () {
   infoln "Bringing up Org3 peer"
   Org3Up
 
+  # Note: 原来的逻辑是首先复制organizations/peerOrganizations/org3.example.com到第一台节点，然后到第一台节点cli上执行
   # Use the CLI container to create the configuration transaction needed to add
   # Org3 to the network
   infoln "Generating and submitting config tx to add Org3"

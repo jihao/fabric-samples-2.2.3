@@ -1,5 +1,16 @@
-## Running the test network
+## 在第一台上10.18.188.177
 
-You can use the `./network.sh` script to stand up a simple Fabric test network. The test network has two peer organizations with one peer each and a single node raft ordering service. You can also use the `./network.sh` script to create channels and deploy chaincode. For more information, see [Using the Fabric test network](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html). The test network is being introduced in Fabric v2.0 as the long term replacement for the `first-network` sample.
+将`daniu_network-1`目录上传至`/root/fabric/fabric-samples/`目录
 
-Before you can deploy the test network, you need to follow the instructions to [Install the Samples, Binaries and Docker Images](https://hyperledger-fabric.readthedocs.io/en/latest/install.html) in the Hyperledger Fabric documentation.
+./network.sh up createChannel -ca -c mychannel -s couchdb
+
+scp -r /root/fabric/fabric-samples/daniu-network-1 root@10.18.188.178:/root/fabric/fabric-samples/daniu-network-1
+
+
+## 在第二台上10.18.188.178
+
+cd /root/fabric/fabric-samples/daniu_network-1/addOrg3
+
+./addOrg3.sh up -c mychannel -s couchdb
+
+
