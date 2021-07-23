@@ -13,4 +13,9 @@ cd /root/fabric/fabric-samples/daniu-network-1/addOrg3
 
 ./addOrg3.sh up -c mychannel -s couchdb
 
+### org3 & org4 都运行在第二台上10.18.188.178
+cd /root/fabric/fabric-samples/daniu-network-1/addOrg4
+
+./addOrg4.sh up -c mychannel -s couchdb
+
 
