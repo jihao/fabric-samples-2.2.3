@@ -34,7 +34,7 @@ fetchChannelConfig 1 ${CHANNEL_NAME} config.json
 
 # Modify the configuration to append the new org
 set -x
-jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org4MSP":.[1]}}}}}' config.json ./organizations/peerOrganizations/org5.example.com/org5.json > modified_config.json
+jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org5MSP":.[1]}}}}}' config.json ./organizations/peerOrganizations/org5.example.com/org5.json > modified_config.json
 { set +x; } 2>/dev/null
 
 # Compute a config update, based on the differences between config.json and modified_config.json, write it as a transaction to org5_update_in_envelope.pb
