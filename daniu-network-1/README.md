@@ -1,3 +1,4 @@
+# 部署区块链环境
 ## 在第一台上10.18.188.177
 
 将`daniu-network-1`目录上传至`/root/fabric/fabric-samples/`目录
@@ -29,8 +30,20 @@ cd /root/fabric/fabric-samples/daniu-network-1/addOrg5
 ./addOrg5.sh up -c mychannel -s couchdb
 
 
+# 删除组织（Org5）
+## 在第三台上10.18.188.179
+cd /root/fabric/fabric-samples/daniu-network-1/addOrg5
+./delOrg5.sh del -c mychannel -s couchdb
 
-## 部署链码
+echo "成功删除组织Org5后，可以停止相关docker容器"
+./delOrg5.sh down -c mychannel -s couchdb
+
+相关文件2个，如果要删除其他组织，请参考
+addOrg5/delOrg5.sh
+scripts/org5-scripts/updateChannelConfigDel.sh
+
+
+# 部署链码
 root/Niuinfo.com123!
 
 ## 在第一台上10.18.188.177
