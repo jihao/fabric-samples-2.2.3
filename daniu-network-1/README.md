@@ -27,3 +27,33 @@ scp -r root@10.18.188.178:/root/fabric/fabric-samples/daniu-network-1/* root@10.
 cd /root/fabric/fabric-samples/daniu-network-1/addOrg5
 
 ./addOrg5.sh up -c mychannel -s couchdb
+
+
+
+## 部署链码
+root/Niuinfo.com123!
+
+## 在第一台上10.18.188.177
+scp -r root@10.18.188.177:/root/fabric/fabric-samples/bin root@10.18.188.178:/root/fabric/fabric-samples/bin
+scp -r root@10.18.188.177:/root/fabric/fabric-samples/bin root@10.18.188.179:/root/fabric/fabric-samples/bin
+scp -r root@10.18.188.177:/root/fabric/fabric-samples/config root@10.18.188.178:/root/fabric/fabric-samples/config
+scp -r root@10.18.188.177:/root/fabric/fabric-samples/config root@10.18.188.179:/root/fabric/fabric-samples/config
+
+
+source ./scripts/envDaniu.sh
+
+./scripts/deployCC12.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## 在第二台上10.18.188.178
+
+source ./scripts/envDaniu.sh
+
+./scripts/deployCC34.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## 在第三台上10.18.188.179
+
+source ./scripts/envDaniu.sh
+
+./scripts/deployCC5.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+./scripts/deployCCCommit.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
