@@ -70,3 +70,43 @@ source ./scripts/envDaniu.sh
 ./scripts/deployCC5.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
 
 ./scripts/deployCCCommit.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## Cli 链码调用
+
+export FABRIC_CFG_PATH=/root/fabric/fabric-samples/config
+cd /root/fabric/fabric-samples/daniu-network-1
+source scripts/envVar.sh
+setGlobals 1
+setGlobalsCLI 1
+peer chaincode query -C mychannel -n daniu_1 -c '{"function":"QueryCompany", "Args":[ "{\"CompanyName\": \" 上海达牛信息技术有限公司\", \"CompanyCode\":  \"123456789123456789\"}","100",""]}'
+
+
+## 升级链码
+假设链码目录为 daniu_v2, 新增方法 QueryCompanyV2
+
+## 在第一台上10.18.188.177
+
+cd /root/fabric/fabric-samples/daniu-network-1/
+
+source ./scripts/envDaniu_v2.sh
+
+./scripts/deployCC12.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## 在第二台上10.18.188.178
+
+cd /root/fabric/fabric-samples/daniu-network-1/
+
+source ./scripts/envDaniu_v2.sh
+
+./scripts/deployCC34.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## 在第三台上10.18.188.179
+
+cd /root/fabric/fabric-samples/daniu-network-1/
+
+source ./scripts/envDaniu_v2.sh
+
+./scripts/deployCC5.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+./scripts/deployCCCommit.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
