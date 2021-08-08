@@ -17,7 +17,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - /home/ubuntu/postgresql/data:/var/lib/postgresql/data
+      - /root/fabric/fabric-samples/Ledger-Data-Refiner/data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
@@ -31,11 +31,12 @@ services:
       - ./config/config.ini:/opt/config/config.ini
       - ./config/connection-config-docker.yaml:/opt/config/connection-config.yaml
       - /opt/refiner/log:/root/refiner/log
-      - /YOUR PATH HERE/organizations:/opt/organizations
+      - /root/fabric/fabric-samples/daniu-network-1/organizations:/opt/organizations
     command: sh -c "/opt/ledgerdata-refiner"
     ports:
       - 30052:30052
     depends_on:
-      - refinerdb.network.com
+      refinerdb.network.com:
+        condition: service_healthy
     networks:
       - network.com
