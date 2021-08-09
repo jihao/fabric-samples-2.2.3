@@ -2074,7 +2074,30 @@ func (sc *SimpleContract) QueryComment(ctx contractapi.TransactionContextInterfa
 
 // daniu v2 - company富查询
 func (sc *SimpleContract) QueryCompanyV2(ctx contractapi.TransactionContextInterface, cond string, pageSize string, bookmark string) (map[string]interface{}, error) {
-	return QueryCompany(ctx, cond, pageSize, bookmark)
+	queryString, err := buildSelector(cond, "company")
+	if err != nil {
+		return buildErrorResult(err), nil
+	}
+	page, err := strconv.ParseInt(pageSize, 10, 32)
+	if err != nil {
+		return buildErrorResult(err), nil
+	}
+	resultsIterator, responseMetadata, err := ctx.GetStub().GetQueryResultWithPagination(queryString, int32(page), bookmark) // 富查询的返回结果可能为多条 所以这里返回的是一个迭代器 需要我们进一步的处理来获取需要的结果
+	if err != nil {
+		return buildErrorResult(err), nil
+	}
+	defer resultsIterator.Close() //释放迭代器
+
+	entityList, err := buidMapListFromIterator(resultsIterator)
+	if err != nil {
+		return buildErrorResult(err), nil
+	}
+
+	result := make(map[string]interface{})
+	result["data"] = entityList
+	result["responseMetadata"] = responseMetadata
+	result["code"] = 200
+	return result, nil
 }
 
 
