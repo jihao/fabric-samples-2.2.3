@@ -110,7 +110,9 @@ func iterGetSchemaInJson(keys map[string]interface{}, args map[string]interface{
 			iterGetSchemaInJson((keys[k]).(map[string]interface{}), subKey)
 		} else if reflect.ValueOf(v).Kind() == reflect.Slice ||
 			reflect.ValueOf(v).Kind() == reflect.Array {
-			keys[k] = "[" + reflect.TypeOf(v.([]interface{})[0]).Name() + "]"
+			if len(v.([]interface{})) >0 {
+				keys[k] = "[" + reflect.TypeOf(v.([]interface{})[0]).Name() + "]"
+			}
 		} else {
 			keys[k] = reflect.TypeOf(v).Name()
 		}
