@@ -82,7 +82,7 @@ cd /root/fabric/fabric-samples/daniu-network-1
 source scripts/envVar.sh
 setGlobals 1
 setGlobalsCLI 1
-peer chaincode query -C mychannel -n daniu_1 -c '{"function":"QueryCompany", "Args":[ "{\"CompanyName\": \" 上海达牛信息技术有限公司\", \"CompanyCode\":  \"123456789123456789\"}","100",""]}'
+peer chaincode query -C mychannel -n daniu_1 -c '{"function":"QueryCompany", "Args":[ "{\"CompanyName\": \"上海达牛信息技术有限公司\", \"CompanyCode\":  \"123456789123456789\"}","100",""]}'
 
 
 ## 升级链码
