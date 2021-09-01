@@ -4,6 +4,8 @@
 
 数据来源为 10.18.188.177/178，目标环境 173/174，恢复数据org1,org2,org3,org4的账本及数据库, 不包含org5
 
+参考文档：https://hyperledger-fabric.readthedocs.io/en/release-2.3/upgrading_your_components.html#ledger-backup-and-restore
+
 基本步骤为
 1. 安装新环境，不安装链码
 2. 备份账本 -> 迁移到新环境 -> docker重启peer，orderer
@@ -37,12 +39,16 @@ scp -r /root/fabric/fabric-samples/daniu-network-2/organizations/peerOrganizatio
 # 登录10.18.188.177 -> 10.18.188.173 
 root/Niuinfo.com123!
 
-## 复制ca数据，进行upgrade
-### 10.18.188.177
-scp -r /root/fabric/fabric-samples/daniu-network-1/organizations/fabric-ca/* root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/organizations/fabric-ca/
+-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x  
+尝试不执行CA Server部分
 
-### 10.18.188.173 
-docker restart ca_orderer ca_org1 ca_org2
+	## 复制ca数据，进行upgrade
+	### 10.18.188.177
+	scp -r /root/fabric/fabric-samples/daniu-network-1/organizations/fabric-ca/* root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/organizations/fabric-ca/
+
+	### 10.18.188.173 
+	docker restart ca_orderer ca_org1 ca_org2
+-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x
 
 ## 复制order节点数据, 依次进行rolling upgrade
 ### 10.18.188.177
@@ -116,6 +122,23 @@ docker restart peer0.org4.example.com
 
 # 步骤三：验证
 
+## 结论  
+| 项目 | 结论 |  
+| ------------ | ------------- |
+| 数据库备份 | OK |
+| CA备份    | OK |
+| 单独org1 org2 账本数据备份恢复 | OK |
+| org3 org4 账本数据备份恢复 | NOK |
+
+### 不备份CA证书
+org3 org4 账本数据备份恢复， 日志报错 Server TLS handshake failed 
+
+### 备份CA证书
+重启org1.peer org2.peer， peer 日志报错 
+UTC [comm.tls] ClientHandshake -> ERRO 04d Client TLS handshake failed after 1.142795ms with error: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "ca.example.com") remoteaddress=10.18.188.173:7050
+
+### CA备份 + 重启机器
+ClientHandshake -> ERRO 07d Client TLS handshake failed after 1.192626ms with error: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "ca.example.com") remoteaddress=10.18.188.173:7050
 
 
 ---
