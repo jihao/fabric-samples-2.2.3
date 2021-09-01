@@ -44,10 +44,19 @@ root/Niuinfo.com123!
 
 	## 复制ca数据，进行upgrade
 	### 10.18.188.177
-	scp -r /root/fabric/fabric-samples/daniu-network-1/organizations/fabric-ca/* root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/organizations/fabric-ca/
+	scp -r /root/fabric/fabric-samples/daniu-network-1/organizations/fabric-ca/ root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/organizations/fabric-ca
 
 	### 10.18.188.173 
 	docker restart ca_orderer ca_org1 ca_org2
+----
+	## 重用所有生成的数据（测试失败）
+	scp -r /root/fabric/fabric-samples/daniu-network-1/organizations/ root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/organizations
+
+	scp -r /root/fabric/fabric-samples/daniu-network-1/channel-artifacts/ root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/channel-artifacts
+
+	scp -r /root/fabric/fabric-samples/daniu-network-1/system-genesis-block/ root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-2/system-genesis-block
+----
+
 -x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x
 
 ## 复制order节点数据, 依次进行rolling upgrade
@@ -127,7 +136,7 @@ docker restart peer0.org4.example.com
 | ------------ | ------------- |
 | 数据库备份 | OK |
 | CA备份    | OK |
-| 单独org1 org2 账本数据备份恢复 | OK |
+| 单独org1 org2 账本数据备份恢复 | NOK |
 | org3 org4 账本数据备份恢复 | NOK |
 
 ### 不备份CA证书
