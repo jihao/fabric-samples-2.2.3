@@ -55,14 +55,14 @@ channels:
 
   mychannel:
     peers:
-      peer0.org1.example.com:
+      peer0.org1.niuinfo.com:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: true
 
     orderers:
-      - orderer.example.com
+      - orderer.niuinfo.com
     # [Optional]. The application can use these options to perform channel operations like retrieving channel
     # config etc.
     policies:
@@ -88,25 +88,25 @@ channels:
 organizations:
   org1:
     mspid: Org1MSP
-    cryptoPath: peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
+    cryptoPath: peerOrganizations/org1.niuinfo.com/users/{username}@org1.niuinfo.com/msp
     # peer
     peers:
-      - peer0.org1.example.com
+      - peer0.org1.niuinfo.com
     # ca
     certificateAuthorities:
-      - ca.org1.example.com
+      - ca.org1.niuinfo.com
 
     users:
       Admin:
         cert:
-          path: /opt/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem
+          path: /opt/organizations/peerOrganizations/org1.niuinfo.com/users/Admin@org1.niuinfo.com/msp/signcerts/cert.pem
       User1:
         cert:
-          path: /opt/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem
+          path: /opt/organizations/peerOrganizations/org1.niuinfo.com/users/User1@org1.niuinfo.com/msp/signcerts/cert.pem
 
   ordererorg:
     mspID: OrdererMSP
-    cryptoPath: ordererOrganizations/example.com/users/{username}@example.com/msp
+    cryptoPath: ordererOrganizations/niuinfo.com/users/{username}@niuinfo.com/msp
 #
 # List of orderers to send transaction and channel create/update requests to. For the time
 # being only one orderer is needed. If more than one is defined, which one get used by the
@@ -114,14 +114,14 @@ organizations:
 #
 orderers:
 
-  orderer.example.com:
+  orderer.niuinfo.com:
     # [Optional] Default: Infer from hostname
-    url: orderer.example.com:7050
+    url: orderer.niuinfo.com:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
     grpcOptions:
-      ssl-target-name-override: orderer.example.com
+      ssl-target-name-override: orderer.niuinfo.com
       # These parameters should be set in coordination with the keepalive policy on the server,
       # as incompatible settings can result in closing of connection.
       # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
@@ -134,7 +134,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /opt/organizations/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+      path: /opt/organizations/ordererOrganizations/niuinfo.com/msp/tlscacerts/tlsca.niuinfo.com-cert.pem
 
 #
 # List of peers to send various requests to, including endorsement, query
@@ -154,17 +154,17 @@ peers:
       # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
       allow-insecure: false
 
-  peer0.org1.example.com:
+  peer0.org1.niuinfo.com:
     # this URL is used to send endorsement and query requests
     # [Optional] Default: Infer from hostname
-    url: peer0.org1.example.com:7051
+    url: peer0.org1.niuinfo.com:7051
 
     grpcOptions:
-      ssl-target-name-override: peer0.org1.example.com
+      ssl-target-name-override: peer0.org1.niuinfo.com
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /opt/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: /opt/organizations/peerOrganizations/org1.niuinfo.com/tlsca/tlsca.org1.niuinfo.com-cert.pem
 
 
 #
@@ -173,18 +173,18 @@ peers:
 # Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
 #
 certificateAuthorities:
-  ca.org1.example.com:
+  ca.org1.niuinfo.com:
     # [Optional] Default: Infer from hostname
     url: https://localhost:7054
     tlsCACerts:
       # Comma-Separated list of paths
-      path: /opt/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: /opt/organizations/peerOrganizations/org1.niuinfo.com/tlsca/tlsca.org1.niuinfo.com-cert.pem
       # Client key and cert for SSL handshake with Fabric CA
       client:
         key:
-          path: /opt/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+          path: /opt/organizations/peerOrganizations/org1.niuinfo.com/peers/peer0.org1.niuinfo.com/tls/server.key
         cert:
-          path: /opt/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+          path: /opt/organizations/peerOrganizations/org1.niuinfo.com/peers/peer0.org1.niuinfo.com/tls/server.crt
 
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.

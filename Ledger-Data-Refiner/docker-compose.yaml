@@ -31,7 +31,7 @@ services:
       - ./config/config.ini:/opt/config/config.ini
       - ./config/connection-config-docker.yaml:/opt/config/connection-config.yaml
       - /opt/refiner/log:/root/refiner/log
-      - /root/fabric/fabric-samples/daniu-network-1/organizations:/opt/organizations
+      - /root/fabric/fabric-samples/daniu-network-prod/organizations:/opt/organizations
     command: sh -c "/opt/ledgerdata-refiner"
     ports:
       - 30052:30052

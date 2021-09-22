@@ -1,3 +1,9 @@
+# 系统软件安装
+## 注意在每台机器上都要安装
+上传 daniu-install.zip 的内容到 /root/fabric 目录
+
+参考 daniu-install/README.md 安装系统，设置环境变量等
+
 # 部署区块链环境
 ## 在第一台上47.97.101.21
 
