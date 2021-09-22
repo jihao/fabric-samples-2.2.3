@@ -1,0 +1,27 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+  extrahosts:
+         extra_hosts:
+            - "peer1.org1.dayunban.com:106.15.180.142"
+            - "peer0.org1.dayunban.com:106.15.180.142"
+            - "peer1.org4.niuinfo.com:106.15.180.142"
+            - "peer0.org4.niuinfo.com:106.15.180.142"
+            - "peer1.org5.niuinfo.com:10.18.188.179"
+            - "peer0.org5.niuinfo.com:10.18.188.179"
+            - "orderer.niuinfo.com:47.97.101.21"
+            - "orderer2.niuinfo.com:47.97.101.21"
+            - "orderer3.niuinfo.com:47.97.101.21"
+            - "orderer4.niuinfo.com:47.97.101.21"
+            - "orderer5.niuinfo.com:47.97.101.21"
+            - "orderer6.niuinfo.com:106.15.180.142"
+            - "peer0.org1.niuinfo.com:47.97.101.21"
+            - "peer1.org1.niuinfo.com:47.97.101.21"
+            - "peer0.org2.niuinfo.com:47.97.101.21"
+            - "peer1.org2.niuinfo.com:47.97.101.21"
+
