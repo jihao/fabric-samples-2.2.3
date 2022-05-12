@@ -3,6 +3,7 @@
  */
 
 plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
     id 'application'
     id 'checkstyle'
     id 'jacoco'
@@ -13,7 +14,8 @@ version '1.0-SNAPSHOT'
 
 dependencies {
     
-    compileOnly 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.+'
+    implementation 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.+'
+    implementation 'org.json:json:+'
 
     testImplementation 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.+'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
@@ -22,10 +24,7 @@ dependencies {
 }
 
 repositories {
-    maven {
-        url "https://hyperledger.jfrog.io/hyperledger/fabric-maven"
-    }
-    jcenter()
+    mavenCentral()
     maven {
         url 'https://jitpack.io'
     }
@@ -56,6 +55,18 @@ test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
+    }
+}
+
+mainClassName = 'org.hyperledger.fabric.contract.ContractRouter'
+
+shadowJar {
+    baseName = 'chaincode'
+    version = null
+    classifier = null
+
+    manifest {
+        attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
     }
 }
 

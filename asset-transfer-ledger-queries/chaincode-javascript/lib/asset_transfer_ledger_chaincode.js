@@ -1,5 +1,7 @@
 /*
- SPDX-License-Identifier: Apache-2.0
+ * Copyright IBM Corp. All Rights Reserved.
+ *
+ * SPDX-License-Identifier: Apache-2.0
 */
 
 // ====CHAINCODE EXECUTION SAMPLES (CLI) ==================
@@ -9,7 +11,7 @@
 // peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["CreateAsset","asset2","red","50","Tom","150"]}'
 // peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["CreateAsset","asset3","blue","70","Tom","200"]}'
 // peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["TransferAsset","asset2","jerry"]}'
-// peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["TransferAssetsBasedOnColor","blue","jerry"]}'
+// peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["TransferAssetByColor","blue","jerry"]}'
 // peer chaincode invoke -C CHANNEL_NAME -n asset_transfer -c '{"Args":["DeleteAsset","asset1"]}'
 
 // ==== Query assets ====
@@ -60,10 +62,10 @@
 // curl -i -X POST -H "Content-Type: application/json" -d "{\"index\":{\"fields\":[{\"size\":\"desc\"},{\"docType\":\"desc\"},{\"owner\":\"desc\"}]},\"ddoc\":\"indexSizeSortDoc\", \"name\":\"indexSizeSortDesc\",\"type\":\"json\"}" http://hostname:port/myc1_assets/_index
 
 // Rich Query with index design doc and index name specified (Only supported if CouchDB is used as state database):
-//   peer chaincode query -C CHANNEL_NAME -n asset_transfer -c '{"Args":["QueryAssets","{\"selector\":{\"docType\":\"asset\",\"owner\":\"Tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
+//   peer chaincode query -C CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets","{\"selector\":{\"docType\":\"asset\",\"owner\":\"Tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 // Rich Query with index design doc specified only (Only supported if CouchDB is used as state database):
-//   peer chaincode query -C CHANNEL_NAME -n asset_transfer -c '{"Args":["QueryAssets","{\"selector\":{\"docType\":{\"$eq\":\"asset\"},\"owner\":{\"$eq\":\"Tom\"},\"size\":{\"$gt\":0}},\"fields\":[\"docType\",\"owner\",\"size\"],\"sort\":[{\"size\":\"desc\"}],\"use_index\":\"_design/indexSizeSortDoc\"}"]}'
+//   peer chaincode query -C CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets","{\"selector\":{\"docType\":{\"$eq\":\"asset\"},\"owner\":{\"$eq\":\"Tom\"},\"size\":{\"$gt\":0}},\"fields\":[\"docType\",\"owner\",\"size\"],\"sort\":[{\"size\":\"desc\"}],\"use_index\":\"_design/indexSizeSortDoc\"}"]}'
 
 'use strict';
 
@@ -179,12 +181,12 @@ class Chaincode extends Contract {
 	async GetAssetsByRange(ctx, startKey, endKey) {
 
 		let resultsIterator = await ctx.stub.getStateByRange(startKey, endKey);
-		let results = await this.GetAllResults(resultsIterator, false);
+		let results = await this._GetAllResults(resultsIterator, false);
 
 		return JSON.stringify(results);
 	}
 
-	// TransferAssetBasedOnColor will transfer assets of a given color to a certain new owner.
+	// TransferAssetByColor will transfer assets of a given color to a certain new owner.
 	// Uses a GetStateByPartialCompositeKey (range query) against color~name 'index'.
 	// Committing peers will re-execute range queries to guarantee that result sets are stable
 	// between endorsement time and commit time. The transaction is invalidated by the
@@ -247,7 +249,7 @@ class Chaincode extends Contract {
 	async GetQueryResultForQueryString(ctx, queryString) {
 
 		let resultsIterator = await ctx.stub.getQueryResult(queryString);
-		let results = await this.GetAllResults(resultsIterator, false);
+		let results = await this._GetAllResults(resultsIterator, false);
 
 		return JSON.stringify(results);
 	}
@@ -260,12 +262,14 @@ class Chaincode extends Contract {
 	async GetAssetsByRangeWithPagination(ctx, startKey, endKey, pageSize, bookmark) {
 
 		const {iterator, metadata} = await ctx.stub.getStateByRangeWithPagination(startKey, endKey, pageSize, bookmark);
-		const results = await this.GetAllResults(iterator, false);
+		let results = {};
 
-		results.ResponseMetadata = {
-			RecordsCount: metadata.fetched_records_count,
-			Bookmark: metadata.bookmark,
-		};
+		results.results = await this._GetAllResults(iterator, false);
+
+		results.fetchedRecordsCount = metadata.fetchedRecordsCount;
+
+		results.bookmark = metadata.bookmark;
+
 		return JSON.stringify(results);
 	}
 
@@ -280,12 +284,13 @@ class Chaincode extends Contract {
 	async QueryAssetsWithPagination(ctx, queryString, pageSize, bookmark) {
 
 		const {iterator, metadata} = await ctx.stub.getQueryResultWithPagination(queryString, pageSize, bookmark);
-		const results = await this.GetAllResults(iterator, false);
+		let results = {};
 
-		results.ResponseMetadata = {
-			RecordsCount: metadata.fetched_records_count,
-			Bookmark: metadata.bookmark,
-		};
+		results.results = await this._GetAllResults(iterator, false);
+
+		results.fetchedRecordsCount = metadata.fetchedRecordsCount;
+
+		results.bookmark = metadata.bookmark;
 
 		return JSON.stringify(results);
 	}
@@ -294,7 +299,7 @@ class Chaincode extends Contract {
 	async GetAssetHistory(ctx, assetName) {
 
 		let resultsIterator = await ctx.stub.getHistoryForKey(assetName);
-		let results = await this.GetAllResults(resultsIterator, true);
+		let results = await this._GetAllResults(resultsIterator, true);
 
 		return JSON.stringify(results);
 	}
@@ -306,7 +311,11 @@ class Chaincode extends Contract {
 		return assetState && assetState.length > 0;
 	}
 
-	async GetAllResults(iterator, isHistory) {
+	// This is JavaScript so without Funcation Decorators, all functions are assumed
+	// to be transaction functions
+	//
+	// For internal functions... prefix them with _
+	async _GetAllResults(iterator, isHistory) {
 		let allResults = [];
 		let res = await iterator.next();
 		while (!res.done) {
@@ -314,7 +323,7 @@ class Chaincode extends Contract {
 				let jsonRes = {};
 				console.log(res.value.value.toString('utf8'));
 				if (isHistory && isHistory === true) {
-					jsonRes.TxId = res.value.tx_id;
+					jsonRes.TxId = res.value.txId;
 					jsonRes.Timestamp = res.value.timestamp;
 					try {
 						jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
