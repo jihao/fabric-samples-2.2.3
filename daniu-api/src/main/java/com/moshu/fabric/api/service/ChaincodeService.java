@@ -67,8 +67,7 @@ public class ChaincodeService {
                 Contract contract = network.getContract(chaincode);
 
             System.out.println("contract = " + contract.toString());
-
-                byte[] result = contract.submitTransaction(functionName, JSON.toJSONString(dataMap),pageSize,bookmark);
+                byte[] result = contract.evaluateTransaction(functionName, JSON.toJSONString(dataMap),pageSize,bookmark);
                 resultMap = JSON.parseObject(new String(result));
                 System.out.println(resultMap.keySet());
             } catch (Exception e) {

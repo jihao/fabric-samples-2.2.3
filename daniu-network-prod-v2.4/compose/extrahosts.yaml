@@ -1,0 +1,14 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+  extrahosts:
+         extra_hosts:
+            - "peer0.org1.dayunban.com:10.18.188.174"
+            - "orderer.niuinfo.com:10.18.188.173"
+            - "peer0.org1.niuinfo.com:10.18.188.173"
+            - "peer0.org2.niuinfo.com:10.18.188.173"

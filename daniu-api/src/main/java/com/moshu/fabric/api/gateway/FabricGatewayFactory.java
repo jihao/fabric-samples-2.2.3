@@ -39,7 +39,8 @@ public final class FabricGatewayFactory {
             throw new WalletCreateException("钱包获取失败", e.getCause());
         }
         // load a CCP
-        Path networkConfigPath = Paths.get("/root/fabric/fabric-samples/daniu-network-1/organizations/peerOrganizations/org1.example.com/connection-org1.json");
+//        Path networkConfigPath = Paths.get("/root/fabric/fabric-samples/daniu-network-prod/organizations/peerOrganizations/org1.niuinfo.com/connection-org1.json");
+        Path networkConfigPath = Paths.get("/root/fabric/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json");
         long time2 = new Date().getTime();
         System.out.println(time2);
         Gateway.Builder builder = Gateway.createBuilder();

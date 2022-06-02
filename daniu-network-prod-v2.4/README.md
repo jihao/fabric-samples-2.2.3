@@ -1,50 +1,77 @@
-# Running the test network
+# 系统软件安装
+## 注意在每台机器上都要安装
+上传 daniu-install.zip 的内容到 /root/fabric 目录
 
-You can use the `./network.sh` script to stand up a simple Fabric test network. The test network has two peer organizations with one peer each and a single node raft ordering service. You can also use the `./network.sh` script to create channels and deploy chaincode. For more information, see [Using the Fabric test network](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html). The test network is being introduced in Fabric v2.0 as the long term replacement for the `first-network` sample.
+参考 daniu-install/README.md 安装系统，设置环境变量等
 
-Before you can deploy the test network, you need to follow the instructions to [Install the Samples, Binaries and Docker Images](https://hyperledger-fabric.readthedocs.io/en/latest/install.html) in the Hyperledger Fabric documentation.
+# 部署区块链环境
+## 在第一台上47.97.101.21
 
-## Using the Peer commands
+将`daniu-network-prod-v2.4`目录上传至`/root/fabric/fabric-samples/`目录
 
-The `setOrgEnv.sh` script can be used to set up the environment variables for the organizations, this will help to be able to use the `peer` commands directly.
+./network.sh up createChannel -ca -c mychannel -s couchdb
 
-First, ensure that the peer binaries are on your path, and the Fabric Config path is set assuming that you're in the `test-network` directory.
+scp -r /root/fabric/fabric-samples/daniu-network-prod-v2.4/* root@106.15.180.142:/root/fabric/fabric-samples/daniu-network-prod-v2.4
 
-```bash
- export PATH=$PATH:$(realpath ../bin)
- export FABRIC_CFG_PATH=$(realpath ../config)
-```
+root/Niuinfo.com123!
+scp -r /root/fabric/fabric-samples/daniu-network-prod-v2.4/* root@10.18.188.174:/root/fabric/fabric-samples/daniu-network-prod-v2.4
 
-You can then set up the environment variables for each organization. The `./setOrgEnv.sh` command is designed to be run as follows.
+## 在第二台上106.15.180.142 root/aUH8Ie6o
 
-```bash
-export $(./setOrgEnv.sh Org2 | xargs)
-```
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4/addOrg3
 
-(Note bash v4 is required for the scripts.)
+./addOrg3.sh up -ca -c mychannel -s couchdb
 
-You will now be able to run the `peer` commands in the context of Org2. If a different command prompt, you can run the same command with Org1 instead.
-The `setOrgEnv` script outputs a series of `<name>=<value>` strings. These can then be fed into the export command for your current shell.
+echo "同步peerOrganizations(org3)到47.97.101.21"
+scp -r /root/fabric/fabric-samples/daniu-network-prod-v2.4/organizations/peerOrganizations/* root@47.97.101.21:/root/fabric/fabric-samples/daniu-network-prod-v2.4/organizations/peerOrganizations
 
-## Chaincode-as-a-service
+scp -r /root/fabric/fabric-samples/daniu-network-prod-v2.4/organizations/peerOrganizations/* root@10.18.188.173:/root/fabric/fabric-samples/daniu-network-prod-v2.4/organizations/peerOrganizations
 
-To learn more about how to use the improvements to the Chaincode-as-a-service please see this [tutorial](./test-network/../CHAINCODE_AS_A_SERVICE_TUTORIAL.md). It is expected that this will move to augment the tutorial in the [Hyperledger Fabric ReadTheDocs](https://hyperledger-fabric.readthedocs.io/en/release-2.4/cc_service.html)
+# 部署链码
+root/Niuinfo.com123!
 
+## 在第一台上47.97.101.21
 
-## Podman
+scp -r root@47.97.101.21:/root/fabric/fabric-samples/config root@106.15.180.142:/root/fabric/fabric-samples/config
 
-*Note - podman support should be considered experimental. There are issues with volume mounting on MacOS that prevent this working. If wish to use podman a LinuxVM is suggested.*
-
-A copy of the `install_fabric.sh` script is in the `test-network` directory. This has been enhanced to support a `podman` argument; if used it will use the `podman` command to pull down images and tag them rather than docker. The images are the same, just pulled differently
-
-The `network.sh` script has been enhanced so that it can use `podman` and `podman-compose` instead of docker. Ensure that `CONTAINER_CLI` is set as below when running `network.sh` script. 
-
-```bash
-CONTAINER_CLI=podman ./network.sh up
-````
-
-As there is no Docker-Daemon when using podman, only the `./network.sh deployCCAAS` command will work.
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4/
 
 
+./network.sh deployCC -ccn daniu -ccp ../daniu -ccl go
 
+## 在第二台上106.15.180.142
+
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4/
+
+./network.sh deployCC_org3 -ccn daniu -ccp ../daniu -ccl go
+
+
+## Cli 链码调用
+
+export FABRIC_CFG_PATH=/root/fabric/fabric-samples/config
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4
+source scripts/envVar.sh
+setGlobals 1
+setGlobalsCLI 1
+peer chaincode query -C mychannel -n daniu_1 -c '{"function":"QueryCompany", "Args":[ "{\"CompanyName\": \"上海达牛信息技术有限公司\", \"CompanyCode\":  \"123456789123456789\"}","100",""]}'
+
+
+## 升级链码
+假设链码目录为 daniu_v2, 新增方法 QueryCompanyV2
+
+## 在第一台上47.97.101.21
+
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4/
+
+source ./scripts/envDaniu_v2.sh
+
+./scripts/deployCC12.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
+
+## 在第二台上106.15.180.142
+
+cd /root/fabric/fabric-samples/daniu-network-prod-v2.4/
+
+source ./scripts/envDaniu_v2.sh
+
+./scripts/deployCC3.sh $CHANNEL_NAME $CC_NAME $CC_SRC_PATH $CC_SRC_LANGUAGE $CC_VERSION $CC_SEQUENCE $CC_INIT_FCN $CC_END_POLICY $CC_COLL_CONFIG $CLI_DELAY $MAX_RETRY $VERBOSE
 

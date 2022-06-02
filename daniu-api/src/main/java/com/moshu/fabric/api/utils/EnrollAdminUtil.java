@@ -23,7 +23,9 @@ public class EnrollAdminUtil {
         Properties props = new Properties();
         //props.put("pemFile", "/data/fabric/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org1.niuinfo.com/ca/ca.org1.niuinfo.com-cert.pem");
 //        props.put("pemFile", "/root/fabric/fabric-samples/first-network/crypto-config/peerOrganizations/org1.niuinfo.com/ca/ca.org1.niuinfo.com-cert.pem");
-        props.put("pemFile", "/root/fabric/fabric-samples/daniu-network-1/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
+//        props.put("pemFile", "/root/fabric/fabric-samples/daniu-network-prod/organizations/peerOrganizations/org1.niuinfo.com/ca/ca.org1.niuinfo.com-cert.pem");
+//        props.put("pemFile", "/root/fabric/fabric-samples/daniu-network-prod/organizations/peerOrganizations/org1.niuinfo.com/ca/ca.org1.niuinfo.com-cert.pem");
+        props.put("pemFile", "/root/fabric/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
         props.put("allowAllHostNames", "true");
         HFCAClient caClient = HFCAClient.createNewInstance("https://localhost:7054", props);
         CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();

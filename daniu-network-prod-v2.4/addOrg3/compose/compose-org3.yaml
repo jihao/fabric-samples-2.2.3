@@ -6,7 +6,7 @@
 version: '3.7'
 
 volumes:
-  peer0.org3.example.com:
+  peer0.org1.dayunban.com:
 
 networks:
   test:
@@ -14,8 +14,8 @@ networks:
 
 services:
 
-  peer0.org3.example.com:
-    container_name: peer0.org3.example.com
+  peer0.org1.dayunban.com:
+    container_name: peer0.org1.dayunban.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -30,24 +30,52 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variables
-      - CORE_PEER_ID=peer0.org3.example.com
-      - CORE_PEER_ADDRESS=peer0.org3.example.com:11051
+      - CORE_PEER_ID=peer0.org1.dayunban.com
+      - CORE_PEER_ADDRESS=peer0.org1.dayunban.com:11051
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.org3.example.com:11052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.dayunban.com:11052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.example.com:11051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:11051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.dayunban.com:11051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.dayunban.com:11051
       - CORE_PEER_LOCALMSPID=Org3MSP
       - CORE_METRICS_PROVIDER=prometheus
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0org1"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s      
     volumes:
-        - ../../organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com:/etc/hyperledger/fabric        
-        - peer0.org3.example.com:/var/hyperledger/production
+        - ../../organizations/peerOrganizations/org1.dayunban.com/peers/peer0.org1.dayunban.com:/etc/hyperledger/fabric        
+        - peer0.org1.dayunban.com:/var/hyperledger/production
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     ports:
       - 11051:11051
     networks:
       - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    labels:
+      service: hyperledger-fabric
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - FABRIC_LOGGING_SPEC=INFO
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      #- FABRIC_LOGGING_SPEC=DEBUG
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - ../../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+        - ../../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    depends_on:
+      - peer0.org1.dayunban.com
+    networks:
+      - test
+    extends:
+      file: extrahosts.yaml
+      service: extrahosts
